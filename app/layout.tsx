@@ -2,8 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./Navbar";
+import "@radix-ui/themes/styles.css";
+import { Theme } from "@radix-ui/themes";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-black text-white ${inter.className}`}>
-        <Navbar />
-        <main>{children}</main>
+      <body className={`bg-black  text-white ${inter.variable}`}>
+        <Theme accentColor="crimson" appearance="dark">
+          <Navbar />
+          <main className="p-5">{children}</main>
+        </Theme>
       </body>
     </html>
   );
