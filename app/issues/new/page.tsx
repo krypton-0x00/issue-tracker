@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/schema/createIssueSchema";
 import { z } from "zod";
+import Spinner from "@/app/components/Spinner";
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
@@ -27,6 +28,7 @@ const NewIssuePage = () => {
     resolver: zodResolver(createIssueSchema),
   });
   const [error, setError] = useState<string | null>("");
+  const [loading, setLoading] = useState(false);
   return (
     <div className="max-w-xl">
       {error && (
@@ -38,10 +40,13 @@ const NewIssuePage = () => {
         className=" space-y-3"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setLoading(true);
             await axios.post("/api/issues", data);
             router.push("/issues");
           } catch (error) {
             setError("Something went wrong");
+          } finally {
+            setLoading(false);
           }
         })}
       >
@@ -61,7 +66,10 @@ const NewIssuePage = () => {
           <p style={{ color: "red" }}>{errors.description?.message}</p>
         )}
 
-        <Button color="crimson">Submit </Button>
+        <Button disabled={loading} color="crimson">
+          Submit
+          {loading && <Spinner />}
+        </Button>
       </form>
     </div>
   );
